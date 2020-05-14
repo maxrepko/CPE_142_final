@@ -2,9 +2,9 @@
 
  module pc_add2_tb;    
         
-      reg [7:0] pc;   
+      reg [15:0] pc;   
 
-      wire [7:0] pc_2; 
+      wire [15:0] pc_2; 
  
       pc_add2 uut (  
            .pc(pc),   
@@ -13,10 +13,10 @@
       
       initial begin  
            
-           pc = 8'd0;
+           pc = 16'd0;
            
            #100;
-           pc = 8'd0;
+           pc = 16'd0;
 
       end  
  endmodule 

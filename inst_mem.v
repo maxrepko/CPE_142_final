@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 
 
-module inst_mem(Address, Instruction); 
+module inst_mem(pc, Instruction); 
 
-    input [7:0] Address; 
+    input [15:0] pc; 
 
     output [15:0] Instruction;
-    
-    reg [15:0] mem[0:32];
+    wire [7:0] Address = pc [7:0];
+    reg [15:0] mem[0:65535];
 
 	initial
 	begin

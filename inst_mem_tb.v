@@ -2,39 +2,39 @@
 
  module inst_mem_tb;  
       // Inputs  
-      reg [7:0] Address;  
+      reg [15:0] pc;  
       // Outputs  
       wire [15:0] Instruction;  
  
       inst_mem uut (  
-           .Address(Address),   
+           .pc(pc),   
            .Instruction(Instruction)
       );
       
       initial begin  
 
-           Address = 8'h0a;
+           pc = 16'h0a;
            
            #100;
-           Address = 8'h00;
+           pc = 16'h00;
            
            #100;
-           Address = 8'h02;
+           pc = 16'h02;
            
            #100;
-           Address = 8'h04;
+           pc = 16'h04;
            
            #100;
-           Address = 8'h06;
+           pc = 16'h06;
            
            #100;
-           Address = 8'h08;
+           pc = 16'h08;
            
            #100;
-           Address = 8'h0a;
+           pc = 16'h0a;
            
            #100;
-           Address = 8'h0c;
+           pc = 16'h0c;
 
 
       end  

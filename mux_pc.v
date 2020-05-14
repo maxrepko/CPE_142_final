@@ -1,9 +1,9 @@
 
 module mux_pc( d0, d1, s, y );
-input [7:0] d0, d1;
+input [15:0] d0, d1;
 input s;
-output [7:0] y;
-reg [7:0] y;
+output [15:0] y;
+reg [15:0] y;
 
 always@(d0 or d1 or s)
 begin

@@ -1,104 +1,73 @@
-module alu (clk, rst, inp, out);
-    input clk, rst;
-    input [15:0] inp;
-	output reg [15:0] out;
-   
-/* This part of the code is responsible for 
-helping guide your input to the correct 
-part of the ALU and help visualize where 
-it goes */
-   
-    always @ (negedge clk) begin
-	
-        if (inp[15:14] == 0) aluA(inp, out);
-		
-        else if (inp[15:14] == 1) aluB(inp, out);
-        
-        else if (inp[15:14] == 2) aluC(inp, out);
-        
-        else if (inp[15:14] == 3) aluD(inp, out);
-        
-        else out = 16'hFFFF;
-		
-    end
+module alu (op1, op2, funct_code, opcode, clk, result, zero);
+	input [7:0] op1, op2;
+	input [3:0] funct_code;
+	input [3:0] opcode;
+	input clk;
+	output reg [7:0] result;
+	output reg zero;
+	integer times = 0;
 
-// This is the ALU branch of type A
-	
-	task aluA;
-		input [15:0] in;
-		output [15:0] out;
-		integer times;
-		
-		begin
-			out = 16'h0000;
-			case (in[3:0])
-				4'b1111	: 	out[11:8] = in[11:8] + in[7:4];
-				4'b1110	: 	out[11:8] = in[11:8] - in[7:4];
-				4'b1101	: 	out[11:8] = in[11:8] & in[7:4];
-				4'b1100	: 	out[11:8] = in[11:8] | in[7:4];
-				4'b0001	: 	out[15:8] = in[11:8] * in[7:4];
+	always @(posedge clk) begin
+		result = 8'h0000;
+		zero = 0;
+		// Type A
+		if (opcode == 4'h0000) begin
+		zero = 0;
+			case (funct_code)
+				4'b1111	: 	result[3:0] = op1[3:0] + op2[3:0];
+				4'b1110	: 	result[3:0] = op1[3:0] - op2[3:0];
+				4'b1101	: 	result[3:0] = op1[3:0] & op2[3:0];
+				4'b1100	: 	result[3:0] = op1[3:0] | op2[3:0];
+				4'b0001	: 	result[7:0] = op1[3:0] * op2[3:0];
 				4'b0010	: 	begin
-								out[11:8] = in[11:8] / in[7:4];
-								out[15:12] = in[11:8] % in[7:4];
+								result[3:0] = op1[3:0] / op2[3:0];
+								result[7:4] = op1 % op2;
 							end
-				4'b1010	: 	out[15:8] = in[11:8] << in[7:4];
-				4'b1011	: 	out[15:8] = in[11:8] >> in[7:4];
+				4'b1010	: 	result[3:0] = op1[3:0] << op2[3:0];
+				4'b1011	: 	result[3:0] = op1[3:0] >> op2[3:0];
 				4'b1000	: 	begin
-								for (times = in[7:4]; times >= 0; times = times - 1) begin
-									in[11:8] = {in[10:8] + in[11]};
+								for (times = op2; times >= 0; times = times - 1) begin
+									result[3:0]  = {op1[2:0] + op1[3]};
 								end
-								out[11:8] = in[11:8];
 							end
 				4'b1001	: 	begin
-								for (times = in[7:4]; times >= 0; times = times - 1) begin
-									in[11:8] = {in[8] + in[11:9]};
+								for (times = op2; times >= 0; times = times - 1) begin
+									result[3:0] = {op1[0] + op1[3:1]};
 								end
-								out[11:8] = in[11:8];
 							end				
-				default	: out = 16'hAFFF;
+				default	:   result = 8'hEF;
 			endcase
 		end
-	
-	
-	endtask
-	
-// This is the ALU branch of type B
-	
-	task aluB;
-		input [15:0] in;
-		output [15:0] out;
 		
-		begin
-			out = 16'hBBBB;
+		// Type B
+		else if (opcode[3:2] == 2) begin
+		zero = 0;
+			case (opcode)
+				4'b1000	:	result = op1 + op2[3:0];
+				4'b1000	:	result = op1 + op2[3:0];
+				default	:   result = 16'hBDEF;
+			endcase
 		end
-	
-	
-	endtask
-	
-// This is the ALU branch of type C
-	
-	task aluC;
-		input [15:0] in;
-		output [15:0] out;
 		
-		begin
-			out = 16'hCCCC;
+		// Type C
+		else if (opcode[3:2] == 1) begin
+		result = 0;
+			case (opcode)
+				4'b0100 :   if (op1 < op2) zero = 1;
+				4'b0101 :	if (op1 > op2) zero = 1;
+				4'b0110 :	if (op1 == op2)	zero = 1;
+				default	:   result = 16'hCDEF;
+			endcase
 		end
-	
-	
-	endtask
-	
-// This is the ALU branch of type D
-	
-	task aluD;
-		input [15:0] in;
-		output [15:0] out;
 		
-		begin
-			out = 16'hDDDD;
+		// Type D
+		else if (opcode[3:2] == 3) begin
+			case (opcode)
+				4'b1100	:	zero = 1;
+				4'b1111	:	zero = 0;
+				default	:   result = 16'hDDEF;
+			endcase
 		end
-	
-	
-	endtask
-
+		
+	end
 endmodule

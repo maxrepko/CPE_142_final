@@ -2,7 +2,7 @@ module registers(clk, rst, wr_en, wr_dest, wr_data, rd_addr_1, rd_data_1, rd_add
       
       input clk, rst, wr_en;
       input [3:0] wr_dest, rd_addr_1,rd_addr_2;
-      input [15:0] wr_data, rd_data_1, rd_data_2;
+      output [15:0] wr_data, rd_data_1, rd_data_2;
    
       reg [15:0] reg_loc [7:0];  
 

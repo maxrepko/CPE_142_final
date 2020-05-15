@@ -1,3 +1,5 @@
+//THIS CODE BELONGS TO: MICHEAL GOMEZ
+
 `timescale 1ns / 1ns
 module memory_tb;
 reg write_enable, read_enable, clk, reset;

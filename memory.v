@@ -1,4 +1,6 @@
- `timescale 1ns / 1ns
+// THIS FILE BELONGS TO: MICHEAL GOMEZ 
+
+`timescale 1ns / 1ns
  module memory(write_enable, read_enable, clk, reset, addr, data_in, data_out);  
     
     input write_enable, read_enable, clk, reset;

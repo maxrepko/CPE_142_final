@@ -5,4 +5,4 @@ input [3:0] sIn4;
 
 assign sOut16 = {12'h000, sIn4};
 
-endmodule
+endmodule 
